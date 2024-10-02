@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "CBC\\Api\\": "src/"
+    },
+    "files": [
+      "config.php"
+    ]
+  },
+  "require": {
+    "ext-pdo": "*"
+  }
+}
