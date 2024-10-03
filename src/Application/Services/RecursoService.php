@@ -25,7 +25,7 @@ class RecursoService implements IRecursoService
         $this->connection = $connection;
     }
 
-    public function consumirRercurso(string $valorConsumido, int $idRecurso, int $idClube)
+    public function consumirRercurso(string $valorConsumido, int $idRecurso, int $idClube): ConsumirRecursoResponse
     {
         $valorConsumido = (float)str_replace(",", ".", $valorConsumido);
         $valorAnteriorRecurso = $this->recursoRepository->consultarSaldoRecurso($idRecurso);
@@ -63,6 +63,12 @@ class RecursoService implements IRecursoService
 
     public function listarRecursos(): ?array
     {
-        return $this->recursoRepository->listarRecursos();
+        $listaRecursos = $this->recursoRepository->listarRecursos();
+
+        foreach ($listaRecursos as $recurso) {
+            $saldoFormatado = number_format($recurso->getSaldoDisponivel(), 2, ',', '');
+            $recurso->setSaldoDisponivel($saldoFormatado);
+        }
+        return $listaRecursos;
     }
 }

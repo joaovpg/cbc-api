@@ -14,7 +14,7 @@ class ClubeController
     {
         $this->clubeService = $clubeService;
     }
-    public function getClubes()
+    public function getClubes(): void
     {
         $listaClubes = $this->clubeService->getListaClube();
 
@@ -23,7 +23,7 @@ class ClubeController
         echo(json_encode($listaClubes));
     }
 
-    public function postClubes()
+    public function postClubes(): void
     {
         $dados = json_decode(file_get_contents('php://input'), true);
         if (
@@ -40,7 +40,7 @@ class ClubeController
             $this->clubeService->cadastrarClube($novoClube);
 
             http_response_code(200);
-            echo json_encode(['sucesso' => 'Clube cadastrado com sucesso.']);
+            echo json_encode('Clube cadastrado com sucesso.');
         } catch (Exception $e) {
             http_response_code(400);
         }

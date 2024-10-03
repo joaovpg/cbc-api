@@ -30,6 +30,11 @@ class Recurso implements \JsonSerializable
         return $this->saldo_disponivel;
     }
 
+    public function setSaldoDisponivel(string $saldo_disponivel): void
+    {
+        $this->saldo_disponivel = $saldo_disponivel;
+    }
+
     public function jsonSerialize(): mixed
     {
         return [

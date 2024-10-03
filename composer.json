@@ -21,7 +21,7 @@
       "@phan",
       "@cs"
     ],
-    "startserver":"php -S localhost:8000"
+    "startserver":"php -S localhost:8000 -t public public/index.php"
   },
   "scripts-descriptions": {
     "checkcode": "Roda as verificações do código com PHAN e PHPCS."
