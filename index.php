@@ -24,18 +24,18 @@ $recursoService = new RecursoService($recursoRepository, $clubeRepository, $conn
 $recursoController = new RecursoController($recursoService);
 
 if ($uri === '/clubes') {
-    switch($method) {
+    switch ($method) {
         case 'GET':
             $clubeController->getClubes();
             break;
         case 'POST':
             $clubeController->postClubes();
-
             break;
+        default:
+            http_response_code(405);
     }
-
-} else if($uri === '/recursos') {
-    switch($method) {
+} elseif ($uri === '/recursos') {
+    switch ($method) {
         case 'GET':
             $recursoController->getRecursos();
             break;
