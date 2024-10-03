@@ -3,10 +3,10 @@
 namespace CBC\Api\Infrastructure\Repository;
 
 use CBC\Api\Domain\Model\Clube;
-use CBC\Api\Domain\Repository\ClubeRepository;
+use CBC\Api\Infrastructure\Interfaces\IClubeRepository;
 use PDO;
 
-class ClubeRepositoryPDO implements ClubeRepository
+class ClubeRepositoryPDO implements IClubeRepository
 {
     private PDO $connection;
 
@@ -75,17 +75,10 @@ class ClubeRepositoryPDO implements ClubeRepository
 
     public function AtualizarSaldoClube(int $idClube, float $saldo): bool
     {
-        $saldoAnterior = $this->consultarSaldoClube($idClube);
-        $novoSaldo = $saldoAnterior - $saldo;
-
-        if($novoSaldo < 0){
-            return false;
-        }
-
         $sqlUpdateQuery = "UPDATE clube SET saldo_disponivel = :novoValor WHERE id = :id";
         $stmt = $this->connection->prepare($sqlUpdateQuery);
         $stmt->bindValue(":id", $idClube, PDO::PARAM_INT);
-        $stmt->bindValue(":novoValor", $novoSaldo);
+        $stmt->bindValue(":novoValor", $saldo);
         return $stmt->execute();
     }
 

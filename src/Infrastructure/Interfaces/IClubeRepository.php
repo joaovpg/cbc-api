@@ -1,10 +1,10 @@
 <?php
 
-namespace CBC\Api\Domain\Repository;
+namespace CBC\Api\Infrastructure\Interfaces;
 
 use CBC\Api\Domain\Model\Clube;
 
-interface ClubeRepository
+interface IClubeRepository
 {
     public function listarClubes(): array;
     public function buscarClubePorId(int $idClube): ?Clube;

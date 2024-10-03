@@ -1,7 +1,7 @@
 <?php
 
 namespace CBC\Api\Domain\Model;
-class Recurso
+class Recurso implements \JsonSerializable
 {
     private ?int $id;
     private string $recurso;
@@ -14,6 +14,28 @@ class Recurso
         $this->saldo_disponivel = $saldo_disponivel;
     }
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
+    public function getRecurso(): string
+    {
+        return $this->recurso;
+    }
+
+    public function getSaldoDisponivel(): string
+    {
+        return $this->saldo_disponivel;
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'id' => $this->id,
+            'clube' => $this->clube,
+            'saldo_disponivel' => $this->saldo_disponivel
+        ];
+    }
 
 }

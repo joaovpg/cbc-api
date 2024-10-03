@@ -3,10 +3,10 @@
 namespace CBC\Api\Infrastructure\Repository;
 
 use CBC\Api\Domain\Model\Recurso;
-use CBC\Api\Domain\Repository\RecursoRepository;
+use CBC\Api\Infrastructure\Interfaces\IRecursoRepository;
 use PDO;
 
-class RecursoRepositoryPDO implements RecursoRepository
+class RecursoRepositoryPDO implements IRecursoRepository
 {
     private PDO $connection;
 
@@ -15,7 +15,7 @@ class RecursoRepositoryPDO implements RecursoRepository
         $this->connection = $connection;
     }
 
-    public function listarRecursos()
+    public function listarRecursos(): array
     {
         $sqlQuery = "SELECT * FROM recurso";
         $stmt = $this->connection->query($sqlQuery);
@@ -25,17 +25,10 @@ class RecursoRepositoryPDO implements RecursoRepository
 
     public function consumirSaldoRecurso(int $id, float $saldo): bool
     {
-        $valorAnterior = $this->consultarSaldoRecurso($id);
-        $novoValor = $valorAnterior - $saldo;
-
-        if ($novoValor < 0) {
-            return false;
-        }
-
         $sqlUpdateQuery = "UPDATE recurso SET saldo_disponivel = :novoValor WHERE id = :id";
         $stmt = $this->connection->prepare($sqlUpdateQuery);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->bindValue(':novoValor', $novoValor, PDO::PARAM_INT);
+        $stmt->bindValue(':novoValor', $saldo, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
