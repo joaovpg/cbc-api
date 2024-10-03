@@ -6,7 +6,7 @@ use CBC\Api\Domain\Model\Recurso;
 use CBC\Api\Infrastructure\Interfaces\IRecursoRepository;
 use PDO;
 
-class RecursoRepositoryPDO implements IRecursoRepository
+class RecursoRepository implements IRecursoRepository
 {
     private PDO $connection;
 
@@ -33,13 +33,12 @@ class RecursoRepositoryPDO implements IRecursoRepository
         return $stmt->execute();
     }
 
-    public function consultarSaldoRecurso($id): float
+    public function consultarSaldoRecurso($id): false|null|string
     {
         $sqlSelectQuery = "SELECT saldo_disponivel FROM recurso WHERE id = :id";
         $stmt = $this->connection->prepare($sqlSelectQuery);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-
         return $stmt->fetchColumn();
     }
 

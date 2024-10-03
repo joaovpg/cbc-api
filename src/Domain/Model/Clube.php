@@ -16,7 +16,7 @@ class Clube implements \JsonSerializable
         $this->saldo_disponivel = $saldo_disponivel;
     }
 
-    public function idClube(): int
+    public function idClube(): ?int
     {
         return $this->id;
     }
@@ -26,9 +26,14 @@ class Clube implements \JsonSerializable
         return $this->clube;
     }
 
-    public function saldoDisponivel(): string
+    public function getSaldoDisponivel(): string
     {
         return $this->saldo_disponivel;
+    }
+
+    public function setSaldoDisponivel(string $saldo_disponivel): void
+    {
+        $this->saldo_disponivel = $saldo_disponivel;
     }
 
     public function jsonSerialize(): mixed

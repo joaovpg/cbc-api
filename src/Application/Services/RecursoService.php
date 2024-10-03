@@ -1,39 +1,44 @@
 <?php
 
 namespace CBC\Api\Application\Services;
+
+use CBC\Api\Api\Models\Recurso\ConsumirRecursoResponse;
 use CBC\Api\Application\Interfaces\IRecursoService;
-use CBC\Api\Infrastructure\Repository\ClubeRepositoryPDO;
-use CBC\Api\Infrastructure\Repository\RecursoRepositoryPDO;
+use CBC\Api\Infrastructure\Interfaces\IClubeRepository;
+use CBC\Api\Infrastructure\Interfaces\IRecursoRepository;
 use Error;
 use PDO;
 
 class RecursoService implements IRecursoService
 {
-    private RecursoRepositoryPDO $recursoRepository;
-    private ClubeRepositoryPDO $clubeRepository;
+    private IRecursoRepository $recursoRepository;
+    private IClubeRepository $clubeRepository;
     private PDO $connection;
 
-    public function __construct(RecursoRepositoryPDO $recursoRepository, ClubeRepositoryPDO $clubeRepository, PDO $connection)
-    {
+    public function __construct(
+        IRecursoRepository $recursoRepository,
+        IClubeRepository $clubeRepository,
+        PDO $connection
+    ) {
         $this->recursoRepository = $recursoRepository;
         $this->clubeRepository = $clubeRepository;
         $this->connection = $connection;
     }
 
-    public function consumirRercurso(string $valorConsumido, int $idRecurso, int $idClube):bool
+    public function consumirRercurso(string $valorConsumido, int $idRecurso, int $idClube)
     {
-        $valorConsumido = str_replace(",", ".", $valorConsumido);
+        $valorConsumido = (float)str_replace(",", ".", $valorConsumido);
         $valorAnteriorRecurso = $this->recursoRepository->consultarSaldoRecurso($idRecurso);
         $valorAnteriorClube = $this->clubeRepository->consultarSaldoClube($idClube);
-        $saldoAtualRecurso = $valorAnteriorRecurso - $valorConsumido;
-        $saldoAtualClube = $valorAnteriorClube - $valorConsumido;
+        $saldoAtualRecurso = (float)$valorAnteriorRecurso - $valorConsumido;
+        $saldoAtualClube = (float)$valorAnteriorClube - $valorConsumido;
 
         if ($saldoAtualClube < 0) {
-            return new \Error('O saldo disponível do clube é insuficiente.');
+            throw new \Error('O saldo disponível do clube é insuficiente.');
         }
 
         if ($saldoAtualRecurso < 0) {
-            return new \Error('O saldo do recurso é insuficiente.');
+            throw new \Error('O saldo disponível do recurso é insuficiente.');
         }
 
         try {
@@ -42,12 +47,18 @@ class RecursoService implements IRecursoService
             $this->clubeRepository->AtualizarSaldoClube($idClube, $saldoAtualClube);
 
             $this->connection->commit();
-            return true;
         } catch (\Exception $e) {
             $this->connection->rollBack();
-            return new Error('Ocorreu um erro ao atualizar o saldo do recurso.');
+            throw new Error('Ocorreu um erro ao atualizar o saldo do recurso.');
         }
 
+        $clube = $this->clubeRepository->buscarClubePorId($idClube);
+        $clubeData = new ConsumirRecursoResponse(
+            $clube->nomeClube(),
+            str_replace(".", ",", $valorAnteriorClube),
+            str_replace(".", ",", $clube->getSaldoDisponivel()),
+        );
+        return  $clubeData;
     }
 
     public function listarRecursos(): ?array

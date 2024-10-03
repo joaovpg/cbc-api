@@ -1,6 +1,7 @@
 <?php
 
 namespace CBC\Api\Api\Models\Recurso;
+
 class ConsumirRecursoRequest
 {
     private string $clube_id;

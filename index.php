@@ -5,8 +5,8 @@ use CBC\Api\Api\Controllers\RecursoController;
 use CBC\Api\Application\Services\ClubeService;
 use CBC\Api\Application\Services\RecursoService;
 use CBC\Api\Infrastructure\Persistence\ConnectionCreator;
-use CBC\Api\Infrastructure\Repository\ClubeRepositoryPDO;
-use CBC\Api\Infrastructure\Repository\RecursoRepositoryPDO;
+use CBC\Api\Infrastructure\Repository\ClubeRepository;
+use CBC\Api\Infrastructure\Repository\RecursoRepository;
 
 require_once 'vendor/autoload.php';
 
@@ -15,11 +15,11 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 $connection = ConnectionCreator::createConnection();
 
-$clubeRepository  = new ClubeRepositoryPDO($connection);
+$clubeRepository  = new ClubeRepository($connection);
 $clubeService = new ClubeService($clubeRepository);
 $clubeController = new ClubeController($clubeService);
 
-$recursoRepository = new RecursoRepositoryPDO($connection);
+$recursoRepository = new RecursoRepository($connection);
 $recursoService = new RecursoService($recursoRepository, $clubeRepository, $connection);
 $recursoController = new RecursoController($recursoService);
 
@@ -30,6 +30,7 @@ if ($uri === '/clubes') {
             break;
         case 'POST':
             $clubeController->postClubes();
+
             break;
     }
 

@@ -11,21 +11,27 @@ class ClubeService implements IClubeService
 {
     private IClubeRepository $clubeRepository;
 
-    function __construct(IClubeRepository $clubeRepository)
-    {
+    public function __construct(
+        IClubeRepository $clubeRepository
+    ) {
         $this->clubeRepository = $clubeRepository;
     }
 
     public function getListaClube(): array
     {
-        return $this->clubeRepository->listarClubes();
+        $listaClubes = $this->clubeRepository->buscarClubes();
+
+        foreach ($listaClubes as $clube) {
+            $saldoFormatado = number_format($clube->getSaldoDisponivel(), 2, ',', '');
+            $clube->setSaldoDisponivel($saldoFormatado);
+        }
+
+        return $listaClubes;
     }
 
     public function cadastrarClube(ClubeCadastroRequest $clubeCadastro): bool
     {
-        $valorNumero = str_replace(
-             ",", ".", $clubeCadastro->getSaldoDisponivel()
-        );
+        $valorNumero = str_replace(",", ".", $clubeCadastro->getSaldoDisponivel());
 
         $novoClube = new Clube(
             null,

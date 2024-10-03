@@ -26,24 +26,24 @@ class ClubeController
     public function postClubes()
     {
         $dados = json_decode(file_get_contents('php://input'), true);
-        if(!isset($dados['clube'])|| !isset($dados['saldo_disponivel'])){
+        if (
+            !isset($dados['clube'])
+            || !isset($dados['saldo_disponivel'])
+        ) {
             http_response_code(400);
             echo json_encode(['erro' => 'Dados inválidos. Campos "clube" e "saldo_disponivel" são obrigatórios.']);
             return;
         }
 
         try {
-
             $novoClube = new ClubeCadastroRequest($dados['clube'], $dados['saldo_disponivel']);
             $this->clubeService->cadastrarClube($novoClube);
 
             http_response_code(200);
             echo json_encode(['sucesso' => 'Clube cadastrado com sucesso.']);
-
         } catch (Exception $e) {
             http_response_code(400);
         }
         header('Content-type: application/json');
-
     }
 }

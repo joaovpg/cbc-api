@@ -6,8 +6,9 @@ use CBC\Api\Domain\Model\Clube;
 
 interface IClubeRepository
 {
-    public function listarClubes(): array;
+    public function buscarClubes(): array;
     public function buscarClubePorId(int $idClube): ?Clube;
-    public function CadastrarClube(Clube $clube): bool;
-    public function AtualizarSaldoClube(int $idClube, float $saldo): bool;
+    public function cadastrarClube(Clube $clube): bool;
+    public function atualizarSaldoClube(int $idClube, float $saldo): bool;
+    public function consultarSaldoClube(int $idClube);
 }

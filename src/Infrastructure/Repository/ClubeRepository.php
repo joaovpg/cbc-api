@@ -6,7 +6,7 @@ use CBC\Api\Domain\Model\Clube;
 use CBC\Api\Infrastructure\Interfaces\IClubeRepository;
 use PDO;
 
-class ClubeRepositoryPDO implements IClubeRepository
+class ClubeRepository implements IClubeRepository
 {
     private PDO $connection;
 
@@ -14,7 +14,7 @@ class ClubeRepositoryPDO implements IClubeRepository
     {
         $this->connection = $connection;
     }
-    public function listarClubes(): array
+    public function buscarClubes(): array
     {
         $sqlQuery = "SELECT * FROM clube";
         $stmt = $this->connection->query($sqlQuery);
@@ -31,26 +31,26 @@ class ClubeRepositoryPDO implements IClubeRepository
         $stmt->bindValue(":idClube", $idClube);
         $stmt->execute();
 
-        if($stmt->rowCount() === 1){
+        if ($stmt->rowCount() === 1) {
             $clubeData = $stmt->fetch();
 
             return new Clube(
-             $clubeData["id"],
-             $clubeData["clube"],
-             $clubeData["saldo_disponivel"],
+                $clubeData["id"],
+                $clubeData["clube"],
+                $clubeData["saldo_disponivel"],
             );
         }
         return null;
     }
 
-    public function CadastrarClube(Clube $clube): bool
+    public function cadastrarClube(Clube $clube): bool
     {
         $sqlInsertQuery = "INSERT INTO clube (clube, saldo_disponivel) VALUES (:clube, :saldo_disponivel)";
         $stmt = $this->connection->prepare($sqlInsertQuery);
 
         $sucess = $stmt->execute([
             ':clube' => $clube->nomeClube(),
-            ':saldo_disponivel' => $clube->saldoDisponivel(),
+            ':saldo_disponivel' => $clube->getSaldoDisponivel(),
         ]);
 
         return $sucess;
@@ -73,7 +73,7 @@ class ClubeRepositoryPDO implements IClubeRepository
         return $clubeList;
     }
 
-    public function AtualizarSaldoClube(int $idClube, float $saldo): bool
+    public function atualizarSaldoClube(int $idClube, float $saldo): bool
     {
         $sqlUpdateQuery = "UPDATE clube SET saldo_disponivel = :novoValor WHERE id = :id";
         $stmt = $this->connection->prepare($sqlUpdateQuery);
@@ -82,7 +82,7 @@ class ClubeRepositoryPDO implements IClubeRepository
         return $stmt->execute();
     }
 
-    public function consultarSaldoClube(int $idClube): float
+    public function consultarSaldoClube(int $idClube)
     {
         $sqlSelectQuery = "SELECT saldo_disponivel FROM clube WHERE id = :idClube";
         $stmt = $this->connection->prepare($sqlSelectQuery);
