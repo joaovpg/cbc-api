@@ -7,6 +7,7 @@ use CBC\Api\Domain\Model\Clube;
 interface ClubeRepository
 {
     public function listarClubes(): array;
-    public function buscarCursoPorId(int $idClube): ?Clube;
+    public function buscarClubePorId(int $idClube): ?Clube;
     public function CadastrarClube(Clube $clube): bool;
+    public function AtualizarSaldoClube(int $idClube, float $saldo): bool;
 }

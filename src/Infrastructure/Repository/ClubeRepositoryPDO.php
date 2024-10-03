@@ -19,21 +19,45 @@ class ClubeRepositoryPDO implements ClubeRepository
         $sqlQuery = "SELECT * FROM clube";
         $stmt = $this->connection->query($sqlQuery);
 
-        return $this->hydrateClubes($stmt);
+        return $this->hydrateListaClubes($stmt);
     }
 
-    public function buscarCursoPorId(int $idClube): ?Clube
+    public function buscarClubePorId(int $idClube): ?Clube
     {
-        // TODO: Implement buscarCursoPorId() method.
+        $sqlSelectQuery = "SELECT * FROM clube WHERE id = :idClube";
+
+        $stmt = $this->connection->prepare($sqlSelectQuery);
+
+        $stmt->bindValue(":idClube", $idClube);
+        $stmt->execute();
+
+        if($stmt->rowCount() === 1){
+            $clubeData = $stmt->fetch();
+
+            return new Clube(
+             $clubeData["id"],
+             $clubeData["clube"],
+             $clubeData["saldo_disponivel"],
+            );
+        }
+        return null;
     }
 
     public function CadastrarClube(Clube $clube): bool
     {
-        // TODO: Implement CadastrarClube() method.
+        $sqlInsertQuery = "INSERT INTO clube (clube, saldo_disponivel) VALUES (:clube, :saldo_disponivel)";
+        $stmt = $this->connection->prepare($sqlInsertQuery);
+
+        $sucess = $stmt->execute([
+            ':clube' => $clube->nomeClube(),
+            ':saldo_disponivel' => $clube->saldoDisponivel(),
+        ]);
+
+        return $sucess;
     }
 
 
-    private function hydrateClubes(\PDOStatement $stmt): array
+    private function hydrateListaClubes(\PDOStatement $stmt): array
     {
         $clubeDataList = $stmt->fetchAll();
         $clubeList = [];
@@ -47,5 +71,32 @@ class ClubeRepositoryPDO implements ClubeRepository
         }
 
         return $clubeList;
+    }
+
+    public function AtualizarSaldoClube(int $idClube, float $saldo): bool
+    {
+        $saldoAnterior = $this->consultarSaldoClube($idClube);
+        $novoSaldo = $saldoAnterior - $saldo;
+
+        if($novoSaldo < 0){
+            return false;
+        }
+
+        $sqlUpdateQuery = "UPDATE clube SET saldo_disponivel = :novoValor WHERE id = :id";
+        $stmt = $this->connection->prepare($sqlUpdateQuery);
+        $stmt->bindValue(":id", $idClube, PDO::PARAM_INT);
+        $stmt->bindValue(":novoValor", $novoSaldo);
+        return $stmt->execute();
+    }
+
+    public function consultarSaldoClube(int $idClube): float
+    {
+        $sqlSelectQuery = "SELECT saldo_disponivel FROM clube WHERE id = :idClube";
+        $stmt = $this->connection->prepare($sqlSelectQuery);
+        $stmt->bindValue(':idClube', $idClube, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn()
+        ;
     }
 }

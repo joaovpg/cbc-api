@@ -16,4 +16,19 @@ class Clube
         $this->saldo_disponivel = $saldo_disponivel;
     }
 
+    public function idClube(): int
+    {
+        return $this->id;
+    }
+
+    public function nomeClube(): string
+    {
+        return $this->clube;
+    }
+
+    public function saldoDisponivel(): string
+    {
+        return $this->saldo_disponivel;
+    }
+
 }
