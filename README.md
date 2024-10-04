@@ -45,7 +45,7 @@ Copie o script e execute diretamente em um cliente MYSQL (como MySQL Workbench).
 
 **Configurar acesso ao banco**
 
-Vá em no arquivo **config.php** e altere as informações do banco de acordo com as configurações do MYSQL instalado em sua máquina, principalmente o **usuário** e a **senha**.
+Vá em no arquivo **config.php** localizado em **config/config.php** e altere as informações do banco de acordo com as configurações do MYSQL instalado em sua máquina, principalmente o **usuário** e a **senha**.
 
 ```php
 <?php
