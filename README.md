@@ -43,6 +43,20 @@ O arquivo **script_db.sql** contém o script da criação do banco de dados, das
 
 Copie o script e execute diretamente em um cliente MYSQL (como MySQL Workbench).
 
+**Configurar acesso ao banco**
+
+Vá em no arquivo **config.php** e altere as informações do banco de acordo com as configurações do MYSQL instalado em sua máquina, principalmente o **usuário** e a **senha**.
+
+```php
+<?php
+// Informações do banco de dados
+    const DBDRIVE = 'mysql'; // Driver
+    const DBHOST = 'localhost'; // Host
+    const DBNAME = 'db_api_cbc'; // Nome
+    const DBUSER = 'root'; // Usuário
+    const DBPASS = 'root'; // Senha
+```
+
 ### Instalando as dependências do projeto
 
 Abra o terminal na pasta do projeto e execute os comandos abaixo:
