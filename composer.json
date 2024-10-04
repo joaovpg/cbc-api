@@ -4,7 +4,8 @@
       "CBC\\Api\\": "src/"
     },
     "files": [
-      "config.php"
+      "config/config.php",
+      "config/generateDatabase.php"
     ]
   },
   "require": {
